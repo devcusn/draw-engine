@@ -161,25 +161,28 @@ class DrawSystem {
     });
   }
 }
-class PanFeauture {
+class PanFeature {
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
     private store: DrawSystemStore
   ) {}
   init() {
-    const { properties, setPropery, renderGrid } = this.store;
-
-    this.canvas.addEventListener("mousedown", function (event) {
-      const rect = canvas.getBoundingClientRect();
-      setPropery("lastX", event.clientX - rect.left);
-      setPropery("lastY", event.clientY - rect.top);
-      setPropery("isDragging", true);
-    });
+    this.canvas.addEventListener(
+      "mousedown",
+      function (event) {
+        const { setPropery } = this.store;
+        const rect = this.canvas.getBoundingClientRect();
+        setPropery("lastX", event.clientX - rect.left);
+        setPropery("lastY", event.clientY - rect.top);
+        setPropery("isDragging", true);
+      }.bind(this)
+    );
 
     this.canvas.addEventListener(
       "mousemove",
       function (event) {
+        const { properties, setPropery, renderGrid } = this.store;
         const { lastX, lastY, isDragging, offsetX, offsetY } = properties;
 
         if (isDragging) {
@@ -203,6 +206,7 @@ class PanFeauture {
     this.canvas.addEventListener(
       "mouseup",
       function () {
+        const { setPropery } = this.store;
         setPropery("isDragging", false);
         this.canvas.style.cursor = "grab";
       }.bind(this)
@@ -211,6 +215,7 @@ class PanFeauture {
     this.canvas.addEventListener(
       "mouseout",
       function () {
+        const { setPropery } = this.store;
         setPropery("isDragging", false);
       }.bind(this)
     );
@@ -254,6 +259,69 @@ class ZoomFeature {
   }
 }
 
+class CoordinateFeature {
+  constructor(
+    private canvas: HTMLCanvasElement,
+    private ctx: CanvasRenderingContext2D,
+    private store: DrawSystemStore
+  ) {}
+
+  drawCoordinates = () => {
+    const { scale, offsetX, offsetY, gridSize } = this.store.properties;
+
+    this.ctx.save();
+
+    this.ctx.font = "12px Arial";
+    this.ctx.fillStyle = "#000000";
+
+    const startCol = Math.floor(-offsetX / (gridSize * scale));
+    const endCol =
+      startCol + Math.ceil(this.canvas.width / (gridSize * scale)) + 1;
+    const startRow = Math.floor(-offsetY / (gridSize * scale));
+    const endRow =
+      startRow + Math.ceil(this.canvas.height / (gridSize * scale)) + 1;
+
+    const yPosition = this.canvas.height - 5;
+    for (let col = startCol; col <= endCol; col += 1) {
+      if (col % 5 === 0) {
+        const x = col * gridSize * scale + offsetX;
+
+        if (x >= 0 && x <= this.canvas.width) {
+          this.ctx.fillText(`${col * gridSize}`, x, yPosition);
+        }
+      }
+    }
+
+    const xPosition = 10;
+    for (let row = startRow; row <= endRow; row += 1) {
+      if (row % 5 === 0) {
+        const y = row * gridSize * scale + offsetY;
+
+        if (y >= 0 && y <= this.canvas.height) {
+          this.ctx.fillText(`${row * gridSize}`, xPosition, y);
+        }
+      }
+    }
+
+    this.ctx.restore();
+  };
+
+  init() {
+    const originalRenderGrid = this.store.renderGrid;
+
+    this.store.renderGrid = () => {
+      originalRenderGrid();
+
+      this.drawCoordinates();
+    };
+
+    this.drawCoordinates();
+  }
+
+  reInit() {
+    this.drawCoordinates();
+  }
+}
 const store = new DrawSystemStore();
 
 const drawSystem = new DrawSystem({
@@ -262,7 +330,8 @@ const drawSystem = new DrawSystem({
     AddPointExtension,
     GridSystemExtension,
     ZoomFeature,
-    PanFeauture,
+    PanFeature,
+    CoordinateFeature,
   ],
 });
 
