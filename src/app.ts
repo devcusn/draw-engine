@@ -1,6 +1,6 @@
 class DrawSystemStore {
   constructor() {}
-  shapes = [];
+  shapes = [{ x: 100, y: 100 }];
   features = {};
   properties = {
     scale: 1,
@@ -16,7 +16,7 @@ class DrawSystemStore {
   setPropery = (property: string, value: any) => {
     this.properties[property] = value;
   };
-  renderGrid = () => {};
+  reRender = () => {};
   addShape(shape: any) {
     this.shapes.push(shape);
   }
@@ -104,14 +104,22 @@ class GridSystemExtension {
     this.ctx.font = `${12 / scale}px Arial`;
 
     for (let row = startRow; row <= endRow; row++) {
-      for (let col = startCol; col <= endCol; col++) {}
+      for (let col = startCol; col <= endCol; col++) {
+        // const x = col * gridSize;
+        // const y = row * gridSize;
+        // this.ctx.fillText(
+        //   `${col * gridSize}, ${row * gridSize}`,
+        //   x + 5,
+        //   y + 15
+        // );
+      }
     }
 
     this.ctx.restore();
   };
 
   init() {
-    this.store.renderGrid = this.drawGrid;
+    this.store.reRender = this.drawGrid;
     this.drawGrid();
   }
   reInit() {
@@ -182,14 +190,14 @@ class PanFeature {
     this.canvas.addEventListener(
       "mousemove",
       function (event) {
-        const { properties, setPropery, renderGrid } = this.store;
+        const { properties, setPropery, reRender } = this.store;
         const { lastX, lastY, isDragging, offsetX, offsetY } = properties;
 
         if (isDragging) {
           const rect = this.canvas.getBoundingClientRect();
+
           const mouseX = event.clientX - rect.left;
           const mouseY = event.clientY - rect.top;
-
           const dx = mouseX - lastX;
           const dy = mouseY - lastY;
 
@@ -198,7 +206,8 @@ class PanFeature {
 
           setPropery("lastX", mouseX);
           setPropery("lastY", mouseY);
-          renderGrid();
+          console.log(lastX, lastY, offsetX, offsetY);
+          reRender();
         }
       }.bind(this)
     );
@@ -254,7 +263,7 @@ class ZoomFeature {
 
       this.store.setPropery("setOffsetX", mouseX - mouseXBeforeZoom * scale);
       this.store.setPropery("setOffsetY", mouseY - mouseYBeforeZoom * scale);
-      this.store.renderGrid();
+      this.store.reRender();
     });
   }
 }
@@ -307,11 +316,19 @@ class CoordinateFeature {
   };
 
   init() {
-    const originalRenderGrid = this.store.renderGrid;
+    const originalRender = this.store.reRender;
 
-    this.store.renderGrid = () => {
-      originalRenderGrid();
-
+    this.store.reRender = () => {
+      originalRender();
+      this.store.shapes.forEach((shape) => {
+        this.ctx.fillStyle = "blue"; // Set the fill color
+        this.ctx.fillRect(
+          this.store.properties.offsetX,
+          this.store.properties.offsetY,
+          100 * this.store.properties.scale,
+          100 * this.store.properties.scale
+        ); // Draw the square
+      });
       this.drawCoordinates();
     };
 
@@ -322,6 +339,7 @@ class CoordinateFeature {
     this.drawCoordinates();
   }
 }
+
 const store = new DrawSystemStore();
 
 const drawSystem = new DrawSystem({
