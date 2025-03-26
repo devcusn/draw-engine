@@ -27,7 +27,7 @@ class DrawSystemStore {
   reInit() {}
 }
 
-class AddPointExtension {
+class AddPointFeature {
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
@@ -57,7 +57,7 @@ class AddPointExtension {
   }
 }
 
-class GridSystemExtension {
+class GridSystemFeature {
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
@@ -129,18 +129,18 @@ class GridSystemExtension {
 
 type DrawSystemConstructor = {
   store: DrawSystemStore;
-  extensions: Array<any>;
+  features: Array<any>;
 };
 class DrawSystem {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   store: DrawSystemStore;
-  extensions: Array<any>;
-  constructor({ store, extensions }: DrawSystemConstructor) {
+  features: Array<any>;
+  constructor({ store, features }: DrawSystemConstructor) {
     this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d")!;
     this.store = store;
-    this.extensions = extensions;
+    this.features = features;
   }
 
   resizeCanvas() {
@@ -162,8 +162,8 @@ class DrawSystem {
       }, 100);
     });
 
-    this.extensions.forEach((Extension) => {
-      const ext = new Extension(this.canvas, this.ctx, store);
+    this.features.forEach((Feature) => {
+      const ext = new Feature(this.canvas, this.ctx, store);
       ext.init();
       this.store.addFeature(ext.constructor.name, ext);
     });
@@ -344,9 +344,9 @@ const store = new DrawSystemStore();
 
 const drawSystem = new DrawSystem({
   store: store,
-  extensions: [
-    AddPointExtension,
-    GridSystemExtension,
+  features: [
+    AddPointFeature,
+    GridSystemFeature,
     ZoomFeature,
     PanFeature,
     CoordinateFeature,
