@@ -13,8 +13,16 @@ class DrawSystemStore {
     gridLineWidth: 1,
     gridLineColor: "#202020",
   };
+  events = {
+    click: (event: MouseEvent) => {
+      console.log("click", event);
+    },
+  };
   setPropery = (property: string, value: any) => {
     this.properties[property] = value;
+  };
+  updateEvent = (eventName: "click", func: (event: unknown) => void) => {
+    this.events[eventName] = func;
   };
   reRender = () => {};
   addShape(shape: any) {
@@ -23,8 +31,6 @@ class DrawSystemStore {
   addFeature(feature: string, value: any) {
     this.features[feature] = value;
   }
-
-  reInit() {}
 }
 
 class AddPointFeature {
@@ -33,7 +39,11 @@ class AddPointFeature {
     private ctx: CanvasRenderingContext2D,
     private store: DrawSystemStore
   ) {}
-  drawPoint(point) {
+  drawPoint(event: MouseEvent) {
+    const rect = this.canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const point = { x, y };
     this.ctx.beginPath();
     this.ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
     this.ctx.fillStyle = "black";
@@ -43,16 +53,9 @@ class AddPointFeature {
   }
   init() {
     this.canvas.addEventListener("click", (event) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      const point = { x, y };
-      this.drawPoint(point);
-    });
-  }
-  reInit() {
-    this.store.shapes.forEach((shape) => {
-      this.drawPoint(shape);
+      this.store.updateEvent("click", (event: MouseEvent) => {
+        this.drawPoint(event);
+      });
     });
   }
 }
@@ -122,53 +125,8 @@ class GridSystemFeature {
     this.store.reRender = this.drawGrid;
     this.drawGrid();
   }
-  reInit() {
-    this.init();
-  }
 }
 
-type DrawSystemConstructor = {
-  store: DrawSystemStore;
-  features: Array<any>;
-};
-class DrawSystem {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
-  store: DrawSystemStore;
-  features: Array<any>;
-  constructor({ store, features }: DrawSystemConstructor) {
-    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext("2d")!;
-    this.store = store;
-    this.features = features;
-  }
-
-  resizeCanvas() {
-    this.canvas.width = this.canvas.clientWidth;
-    this.canvas.height = this.canvas.clientHeight;
-    Object.entries(this.store.features).forEach((feature) => {
-      console.log(feature[1]);
-      feature[1].reInit();
-    });
-  }
-
-  init() {
-    this.resizeCanvas();
-    let resizeTimeout: any;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        this.resizeCanvas();
-      }, 100);
-    });
-
-    this.features.forEach((Feature) => {
-      const ext = new Feature(this.canvas, this.ctx, store);
-      ext.init();
-      this.store.addFeature(ext.constructor.name, ext);
-    });
-  }
-}
 class PanFeature {
   constructor(
     private canvas: HTMLCanvasElement,
@@ -232,6 +190,7 @@ class PanFeature {
     this.canvas.style.cursor = "grab";
   }
 }
+
 class ZoomFeature {
   constructor(
     private canvas: HTMLCanvasElement,
@@ -334,9 +293,72 @@ class CoordinateFeature {
 
     this.drawCoordinates();
   }
+}
 
-  reInit() {
-    this.drawCoordinates();
+type DrawSystemConstructor = {
+  store: DrawSystemStore;
+  features: Array<any>;
+};
+
+class DrawSystem {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  store: DrawSystemStore;
+  features: Array<any>;
+
+  constructor({ store, features }: DrawSystemConstructor) {
+    this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    this.ctx = this.canvas.getContext("2d")!;
+    this.store = store;
+    this.features = features;
+  }
+
+  resizeCanvas() {
+    this.canvas.width = this.canvas.clientWidth;
+    this.canvas.height = this.canvas.clientHeight;
+    (
+      Object.entries(this.store.features) as Array<
+        [string, { init: () => void }]
+      >
+    ).forEach((feature) => {
+      feature[1].init();
+    });
+  }
+
+  onClick = () => {
+    this.canvas.addEventListener("click", (event) => {
+      this.store.events.click(event);
+    });
+  };
+
+  onResize = () => {
+    this.resizeCanvas();
+    let resizeTimeout: any;
+
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.resizeCanvas();
+      }, 100);
+    });
+  };
+
+  eventListeners = () => {
+    this.onClick();
+    this.onResize();
+  };
+
+  init() {
+    this.features.forEach((Feature) => {
+      const feature = new Feature(this.canvas, this.ctx, store);
+      feature.init();
+      this.store.addFeature(feature.constructor.name, feature);
+    });
+    // update click event
+    this.store.updateEvent("click", () => {
+      console.log("updated events");
+    });
+    this.eventListeners();
   }
 }
 
