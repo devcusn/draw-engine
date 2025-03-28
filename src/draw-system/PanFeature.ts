@@ -32,7 +32,6 @@ class PanFeature {
 
         setProperty("lastX", mouseX);
         setProperty("lastY", mouseY);
-        console.log(lastX, lastY, offsetX, offsetY);
         reRender();
       }
     });
@@ -50,5 +49,6 @@ class PanFeature {
 
     this.canvas.style.cursor = "grab";
   };
+  render = () => {};
 }
 export default PanFeature;

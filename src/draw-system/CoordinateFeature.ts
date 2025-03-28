@@ -48,23 +48,10 @@ class CoordinateFeature {
   };
 
   init() {
-    const originalRender = this.store.reRender;
-
-    this.store.reRender = () => {
-      originalRender();
-      this.store.shapes.forEach((shape) => {
-        this.ctx.fillStyle = "blue"; // Set the fill color
-        this.ctx.fillRect(
-          this.store.properties.offsetX,
-          this.store.properties.offsetY,
-          100 * this.store.properties.scale,
-          100 * this.store.properties.scale
-        ); // Draw the square
-      });
-      this.drawCoordinates();
-    };
-
     this.drawCoordinates();
   }
+  render = () => {
+    this.drawCoordinates();
+  };
 }
 export default CoordinateFeature;

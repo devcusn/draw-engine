@@ -27,7 +27,7 @@ const drawEngine = new DrawEngine({
 drawEngine.init();
 
 singleBtn.addEventListener("click", () => {
-  console.log(drawEngine.store.features);
+  drawEngine.store.featuresInstance.PointFeature.init();
 });
 polylineBtn.addEventListener("click", () => {
   console.log("polyline");

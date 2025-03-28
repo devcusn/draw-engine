@@ -6,6 +6,7 @@ class PointFeature {
     private ctx: CanvasRenderingContext2D,
     private store: DrawSystemStore
   ) {}
+
   drawPoint(event: MouseEvent) {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -18,13 +19,15 @@ class PointFeature {
     this.ctx.closePath();
     this.store.addShape(point);
   }
+  // This function is called when the feature is activated
   init() {
-    this.canvas.addEventListener("click", (event) => {
-      this.store.updateEvent("click", (event: MouseEvent) => {
-        this.drawPoint(event);
-      });
+    this.store.updateEvent("click", (event: MouseEvent) => {
+      this.drawPoint(event);
     });
   }
+  render = () => {
+    console.log("rendering PointFeature");
+  };
 }
 
 export default PointFeature;

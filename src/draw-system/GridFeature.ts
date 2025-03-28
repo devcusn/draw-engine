@@ -64,7 +64,6 @@ class GridFeature {
     this.drawGrid();
   }
   init() {
-    this.store.reRender = this.drawGrid;
     this.drawGrid();
   }
 }

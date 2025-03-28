@@ -16,9 +16,7 @@ class DrawStore {
     gridLineColor: "#202020",
   };
   events = {
-    click: (event: MouseEvent) => {
-      console.log("click", event);
-    },
+    click: (event: MouseEvent) => {},
   };
   setProperty = (property: string, value: string | number | boolean) => {
     this.properties[property] = value;

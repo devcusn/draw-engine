@@ -39,18 +39,22 @@ class DrawEngine {
   resizeCanvas() {
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
-    (
-      Object.entries(this.store.featuresInstance) as Array<
-        [string, { init: () => void }]
-      >
-    ).forEach((feature) => {
-      feature[1].init();
-    });
+    this.render();
   }
 
   eventListeners = () => {
     this.onClick();
     this.onResize();
+  };
+
+  render = () => {
+    const features = Object.values(this.store.featuresInstance) as Array<{
+      render: () => void;
+    }>;
+
+    features.forEach((feature) => {
+      feature.render();
+    });
   };
 
   init() {
@@ -66,9 +70,12 @@ class DrawEngine {
     });
     // update click event
     this.store.updateEvent("click", () => {
-      console.log("updated events");
+      console.log("initial click events");
     });
     this.eventListeners();
+    this.store.reRender = () => {
+      this.render();
+    };
   }
 }
 

@@ -6,7 +6,8 @@ class ZoomFeature {
     private ctx: CanvasRenderingContext2D,
     private store: DrawSystemStore
   ) {}
-  init() {
+
+  init = () => {
     const properties = this.store.properties;
 
     this.canvas.addEventListener("wheel", (event) => {
@@ -33,6 +34,7 @@ class ZoomFeature {
       this.store.setProperty("setOffsetY", mouseY - mouseYBeforeZoom * scale);
       this.store.reRender();
     });
-  }
+  };
+  render = () => {};
 }
 export default ZoomFeature;
