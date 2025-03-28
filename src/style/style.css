@@ -18,3 +18,16 @@
 .event-show {
   width: 200px;
 }
+.actions {
+  padding: 4px 0px;
+}
+.btn {
+  padding: 4px;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.btn:hover {
+  background-color: #eeeeee;
+}
