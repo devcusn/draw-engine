@@ -1,9 +1,13 @@
 # Draw Engine
 
 ## Overview
+
 A canvas-based drawing system that provides features for creating and manipulating points, polylines, and other geometric elements with support for panning, zooming, and grid visualization.
 
+![Draw System Demo](docs/draw-engine-demo.gif)
+
 ## Features
+
 - Point creation in single or polyline mode
 - Interactive canvas panning
 - Zoom functionality
@@ -12,6 +16,7 @@ A canvas-based drawing system that provides features for creating and manipulati
 - Extensible feature-based architecture
 
 ## Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/devcusn/draw-engine.git
@@ -24,6 +29,7 @@ npm install
 ```
 
 ## Usage
+
 Include the necessary HTML elements in your page:
 
 ```html
@@ -64,18 +70,23 @@ drawEngine.init();
 ### Core Components
 
 #### DrawStore
+
 Central state management for the drawing system. Handles properties, feature instances, and rendering triggers.
 
 #### DrawEngine
+
 Main engine that initializes and coordinates all features. Manages the canvas context and event handling.
 
 ### Features
 
 #### PointFeature
+
 Handles the creation and rendering of individual points.
 
 #### PanFeature
+
 Enables canvas panning through mouse interactions:
+
 ```javascript
 class PanFeature {
   constructor(
@@ -83,7 +94,7 @@ class PanFeature {
     private ctx: CanvasRenderingContext2D,
     private store: DrawSystemStore
   ) {}
-  
+
   init = () => {
     // Sets up mouse event listeners for dragging the canvas
     this.canvas.addEventListener("mousedown", (event) => {
@@ -97,21 +108,25 @@ class PanFeature {
     // Additional event listeners for mousemove, mouseup, mouseout
     // ...
   };
-  
+
   render = () => {};
 }
 ```
 
 #### ZoomFeature
+
 Provides zoom in/out functionality for the canvas.
 
 #### GridFeature
+
 Renders a grid system for better positioning and alignment.
 
 #### CoordinateFeature
+
 Displays coordinate information to help users understand positions.
 
 ## Extending With New Features
+
 The system is designed to be extensible. To add a new feature:
 
 1. Create a new feature class that follows the feature interface pattern
@@ -119,6 +134,7 @@ The system is designed to be extensible. To add a new feature:
 3. Implement the necessary rendering and interaction methods
 
 Example:
+
 ```javascript
 class NewFeature {
   constructor(canvas, ctx, store) {
@@ -126,11 +142,11 @@ class NewFeature {
     this.ctx = ctx;
     this.store = store;
   }
-  
+
   init = () => {
     // Setup code
   };
-  
+
   render = () => {
     // Render code
   };
@@ -147,6 +163,7 @@ const drawEngine = new DrawEngine({
 ```
 
 ## Event Handling
+
 The system uses event listeners to handle user interactions:
 
 - Mouse down: Start drawing or panning
@@ -155,6 +172,7 @@ The system uses event listeners to handle user interactions:
 - Mouse wheel: Zoom in/out
 
 ## State Management
+
 The DrawStore manages the application state, including:
 
 - Canvas offset coordinates
@@ -164,7 +182,9 @@ The DrawStore manages the application state, including:
 - Feature configuration
 
 ## License
+
 [MIT License](LICENSE)
 
 ## Contributing
+
 Contributions are welcome! Please feel free to submit a Pull Request.
