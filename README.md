@@ -4,8 +4,6 @@
 
 A canvas-based drawing system that provides features for creating and manipulating points, polylines, and other geometric elements with support for panning, zooming, and grid visualization.
 
-![Draw System Demo](docs/draw-engine-demo.gif)
-
 ## Features
 
 - Point creation in single or polyline mode
