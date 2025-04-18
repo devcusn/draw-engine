@@ -13,7 +13,7 @@ class CoordinateFeature {
     this.ctx.save();
 
     this.ctx.font = "12px Arial";
-    this.ctx.fillStyle = "#000000";
+    this.ctx.fillStyle = "#ffffff";
 
     const startCol = Math.floor(-offsetX / (gridSize * scale));
     const endCol =

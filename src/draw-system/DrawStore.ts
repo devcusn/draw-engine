@@ -13,7 +13,7 @@ class DrawStore {
     lastY: 0,
     gridSize: 50,
     gridLineWidth: 1,
-    gridLineColor: "#202020",
+    gridLineColor: "#2B313D",
   };
   events = {
     click: (event: MouseEvent) => {},

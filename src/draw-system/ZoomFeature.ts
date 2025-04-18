@@ -24,7 +24,7 @@ class ZoomFeature {
       const zoom = event.deltaY < 0 ? 1 + zoomIntensity : 1 - zoomIntensity;
 
       const newScale = scale * zoom;
-      if (newScale > 0.1 && newScale < 5) {
+      if (newScale > 0.2 && newScale < 5) {
         this.store.setProperty("scale", newScale);
       } else {
         return;

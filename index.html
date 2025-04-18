@@ -8,18 +8,30 @@
     <link rel="stylesheet" href="/src/style/style.css" />
   </head>
   <body>
-    <div class="canvas-container">
-      <div class="event-show">
-        <div id="click-data"></div>
+    <div class="flex flex-col h-screen" style="background-color: #3b4453">
+      <div class="flex gap-2">
+        <button
+          id="single-btn"
+          class="text-white text-sm px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-all shadow-sm"
+        >
+          Single Point
+        </button>
+        <button
+          id="polyline-btn"
+          class="text-white text-sm px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-all shadow-sm"
+        >
+          Polyline
+        </button>
+        <button
+          class="text-white text-sm px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100 transition-all shadow-sm"
+        >
+          Polygon
+        </button>
       </div>
-      <div class="actions">
-        <button class="btn" id="single-btn">Single Point</button>
-        <button class="btn" id="polyline-btn">Polyline</button>
-        <button class="btn">Polygon</button>
+      <div class="p-4 h-full">
+        <canvas id="canvas" class="canvas"></canvas>
       </div>
-      <canvas id="canvas" class="canvas"></canvas>
     </div>
-
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>

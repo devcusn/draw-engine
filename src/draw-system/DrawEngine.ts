@@ -58,6 +58,7 @@ class DrawEngine {
   };
 
   init() {
+    this.canvas.style.backgroundColor = "#202830";
     const featureEntries = Object.entries(this.features);
     featureEntries.forEach((feat) => {
       const Feat = feat[1].feat;
